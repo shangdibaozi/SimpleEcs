@@ -22,18 +22,6 @@ namespace SimpleEcs
         public Entity _tmpNewEntity;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsAlive(in Entity entity)
-        {
-#if DEBUG
-            if (entity.Index != 0 && entity.aspectId != aspectId)
-            {
-                throw new Exception($"当前Aspect[{AspectNames[aspectId]}] != Aspect[{AspectNames[entity.aspectId]}]");
-            }
-#endif
-            return entityGens[entity.Index].version == entity.Version;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Entity NewEntity()
         {
             Entity entity = default;
@@ -107,7 +95,7 @@ namespace SimpleEcs
             var fields  = typeof(T).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (fields.Length == 0)
             {
-                throw new Exception("使用WithTag添加tag组件");
+                throw new Exception($"使用WithTag添加{nameof(T)}组件");
             }
         }
 #endif
@@ -139,7 +127,7 @@ namespace SimpleEcs
 #if DEBUG
             if (CTagPool<T>() != null && CPool<T>() == null)
             {
-                throw new Exception($"{typeof(T)}  can't add to CPool");
+                throw new Exception($"{typeof(T)} is missing fields, requires WithTag");
             }
             CheckAddTagComponent<T>();
 #endif

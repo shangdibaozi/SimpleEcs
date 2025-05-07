@@ -38,7 +38,7 @@ namespace SimpleEcs
 #if DEBUG
                 if (idx < 0 || idx >= _len)
                 {
-                    throw new Exception("idx out of range");
+                    throw new Exception($"idx[{idx}] out of range[{_len}]");
                 }
 #endif
                 return ref _data[idx];

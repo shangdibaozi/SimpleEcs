@@ -17,68 +17,28 @@ namespace SimpleEcs
 
         }
     }
-
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    public class ObserverArrayBase
-    {
-        internal int _len;
-        internal int _id;
-        
-#if DEBUG
-        private bool _isLock;
-#endif
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Begin()
-        {
-            _id = _len;
-#if DEBUG
-            if (_isLock)
-            {
-                throw new Exception("Query不能在foreach中嵌套遍历");
-            }
-#endif
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool Next()
-        {
-            _id--;
-#if DEBUG
-            _isLock = _id >= 0;
-#endif
-            return _id >= 0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void End()
-        {
-#if DEBUG
-            _isLock = false;
-#endif
-        }
-    }
     
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    public class ObserverArray<T> : ObserverArrayBase
+    /// <summary>
+    /// 所有自定义事件的接口需要实现此接口才能通关代码生成器生成代码
+    /// </summary>
+    public interface IObserver
     {
-        internal T[] arr;
         
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ObserverEnumerator<T> GetEnumerator()
-        {
-            return new ObserverEnumerator<T>(this);
-        }
-    } 
+    }
+
+    /// <summary>
+    /// 触发此接口的
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IObserver<T> where T : struct
+    {
+
+    }
 
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     public sealed partial class EcsSystemGroup : IEcsSystem
     {
-        private static readonly Dictionary<Type, ObserverArrayBase> events = new();
         private readonly List<IEcsSystem> systems = new();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -93,55 +53,6 @@ namespace SimpleEcs
         {
             systems.Add(group);
             return this;
-        }
-
-        /// <summary>
-        /// 添加事件接口系统
-        ///
-        /// 比如T为
-        ///     interface IData
-        ///     {
-        ///         void Run();
-        ///     }
-        /// </summary>
-        /// <typeparam name="S">System</typeparam>
-        /// <typeparam name="T">事件接口</typeparam>
-        /// <returns></returns>
-        public EcsSystemGroup Add<S, T>() where S : IEcsSystem, T, new()
-        {
-            var t = typeof(T);
-            if (!events.ContainsKey(t))
-            {
-                events[t] = new ObserverArray<T>
-                {
-                    arr = new T[1],
-                    _len = 0
-                };
-            }
-            
-            var e = (ObserverArray<T>)events[t];
-            if (e._len >= e.arr.Length)
-            {
-                Array.Resize(ref e.arr, e.arr.Length << 1);
-            }
-
-            e.arr[e._len++] = Sys<S>();
-            if (!systems.Contains(Sys<S>()))
-            {
-                Add<S>();
-            }
-            return this;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ObserverArray<T> GetObservers<T>()
-        {
-            if (events.TryGetValue(typeof(T), out var e))
-            {
-                return (ObserverArray<T>)e;
-            }
-
-            return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -177,32 +88,6 @@ namespace SimpleEcs
         {
             return System<T>.inst;
         }
-    }
-    
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    public readonly ref struct ObserverEnumerator<T>
-    {
-        private readonly ObserverArray<T> _observers;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ObserverEnumerator(ObserverArray<T> observers)
-        {
-            _observers = observers;
-            observers.Begin();
-        }
-
-        public T Current
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _observers.arr[_observers._id];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() => _observers.Next();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => _observers.End();
     }
 
     [Il2CppSetOption(Option.NullChecks, false)]

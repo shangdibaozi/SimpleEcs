@@ -11,7 +11,6 @@ namespace SimpleEcs
     public class CTagPool<T> : ACPool where T : struct
     {
         private SArray<EntityMeta> _entityGens;
-        private BaseAspect _baseAspect;
 
         [Preserve]
         public CTagPool()
@@ -50,6 +49,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CTagPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}:{entity.aspectId}，不能在{BaseAspect.AspectNames[_aspectId]}:{_aspectId}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (Has(entity))
             {
@@ -96,6 +97,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {
@@ -115,6 +118,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CTagPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}:{entity.aspectId}，不能在{BaseAspect.AspectNames[_aspectId]}:{_aspectId}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (Has(entity))
             {
@@ -154,6 +159,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {
@@ -177,6 +184,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {

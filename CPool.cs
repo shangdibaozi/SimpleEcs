@@ -10,6 +10,7 @@ namespace SimpleEcs
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public abstract class ACPool
     {
+        internal BaseAspect _baseAspect;
         internal ushort compId;
 #if SIMPLE_ECS_ENABLE_INT
         internal int[] _sparse;
@@ -58,6 +59,16 @@ namespace SimpleEcs
             return entity.Index < _sparse.Length && _sparse[entity.Index] > 0;
         }
 
+#if DEBUG
+        internal void CheckAlive(in Entity entity)
+        {
+            if (!_baseAspect.IsAlive(entity))
+            {
+                throw new Exception($"CPool<{typeName}>无法对已销毁的实体[{entity}]进行操作");
+            }
+        }
+#endif
+
         internal abstract ushort Init<A>(BaseAspect baseAspect) where A : IAspect;
         internal abstract void IAdd(in Entity entity);
         internal abstract void InnerDel(in Entity entity);
@@ -77,7 +88,6 @@ namespace SimpleEcs
     {
         private SArray<EntityMeta> _entityGens;
         private T[] _data;
-        private BaseAspect _baseAspect;
         
 #if SIMPLE_ECS_ENABLE_INT
         internal int[] _recycledItems;
@@ -155,6 +165,8 @@ namespace SimpleEcs
                     $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}:{entity.aspectId}，不能在{BaseAspect.AspectNames[_aspectId]}:{_aspectId}进行操作");
             }
 
+            CheckAlive(entity);
+
             if (Has(entity))
             {
                 throw new Exception(
@@ -196,6 +208,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}:{entity.aspectId}，不能在{BaseAspect.AspectNames[_aspectId]}:{_aspectId}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (Has(entity))
             {
@@ -238,6 +252,17 @@ namespace SimpleEcs
             Add(entity);
             return true;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T GetOrAddRef(in Entity entity)
+        {
+            if (Has(entity))
+            {
+                return ref this[entity];
+            }
+
+            return ref Add(entity);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal override void IAdd(in Entity entity)
@@ -254,6 +279,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {
@@ -274,6 +301,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {
@@ -307,6 +336,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {
@@ -338,6 +369,8 @@ namespace SimpleEcs
                 throw new Exception(
                     $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
             }
+            
+            CheckAlive(entity);
 
             if (!Has(entity))
             {

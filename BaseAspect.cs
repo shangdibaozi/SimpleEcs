@@ -36,6 +36,23 @@ namespace SimpleEcs
         internal SArray<ACPool> _cPools;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsAlive(in Entity entity)
+        {
+#if DEBUG
+            if (entity.Index >= entityGens.Length)
+            {
+                throw new Exception($"out of range: {entity.Index}");
+            }
+            
+            if (entity.Index != 0 && entity.aspectId != aspectId)
+            {
+                throw new Exception($"当前Aspect[{AspectNames[aspectId]}] != Aspect[{AspectNames[entity.aspectId]}]");
+            }
+#endif
+            return entityGens[entity.Index].version == entity.Version;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void AddEdge(ushort compId)
         {
             if (compId >= edges.Length)

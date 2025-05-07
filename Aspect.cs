@@ -163,6 +163,8 @@ namespace SimpleEcs
             {
                 _queries[i].Clear();
             }
+            
+            entityPool.Clear();
         }
 
         public CPool<T> AddCPool<T>() where T : struct

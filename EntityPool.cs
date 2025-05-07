@@ -91,7 +91,22 @@ namespace SimpleEcs
 
         public void Clear()
         {
+            _recycledItemsCount = 0;
+            for (var i = 0; i < _len; i++)
+            {
+                if (_relations[i] == null)
+                {
+                    break;
+                }
+                else
+                {
+                    _relations[i].Clear();
+                }
+            }
+            _len = 0;   
             
+            Array.Clear(_sparse, 0, _sparse.Length);
+            Array.Clear(_recycledItems, 0, _sparse.Length);
         }
         
         public ref Relation this[in Entity entity]
@@ -142,18 +157,25 @@ namespace SimpleEcs
 
         public void Add(in Entity entity)
         {
+#if DEBUG
+            if (Has(entity))
+            {
+                throw new Exception($"重复添加实体{entity}");
+            }
+#endif
             if (entity.Index >= _sparse.Length)
             {
                 Array.Resize(ref _sparse, entity.Index << 1);
             }
-
-            ref var idx = ref _sparse[entity.Index];
-            idx = _len++;
-            if (idx >= _entities.Length)
+            
+            if (_len == _entities.Length)
             {
                 Array.Resize(ref _entities, _len << 1);
             }
-            _entities[idx] = entity;
+
+            _entities[_len] = entity;
+            _len++;
+            _sparse[entity.Index] = _len;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -165,28 +187,29 @@ namespace SimpleEcs
                 throw new Exception($"未关联实体：{entity}");
             }   
 #endif
+            ref var idx = ref _sparse[entity.Index];
             _len--;
+            _entities[idx - 1] = _entities[_len];
+            _sparse[_entities[idx - 1].Index] = idx;
+            _entities[_len] = default;
+            idx = 0;
             if (_len < _id)
             {
                 _id = _len;
             }
-            ref var idx = ref _sparse[entity.Index];
-            _entities[idx] = _entities[_len];
-            _entities[_len] = default;
-            _sparse[_entities[idx].Index] = idx;
-            idx = -1;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(in Entity entity)
         {
-            return entity.Index < _sparse.Length && _sparse[entity.Index] >= 0;
+            return entity.Index < _sparse.Length && _sparse[entity.Index] > 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             Array.Clear(_entities, 0, _entities.Length);
+            Array.Clear(_sparse, 0, _sparse.Length);
             _len = 0;
             _id = 0;
         }
