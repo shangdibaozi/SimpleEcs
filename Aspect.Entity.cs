@@ -60,7 +60,7 @@ namespace SimpleEcs
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DestroyEntity(in Entity entity)
+        public virtual void DestroyEntity(in Entity entity)
         {
             if (entity == default)
             {

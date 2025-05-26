@@ -138,7 +138,7 @@ namespace SimpleEcs
                 if (entity.aspectId != _aspectId)
                 {
                     throw new Exception(
-                        $"实体属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
+                        $"实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
                 }
 
                 if (_entityGens[entity.Index].version != entity.Version)

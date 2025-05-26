@@ -26,15 +26,6 @@ namespace SimpleEcs
         
     }
 
-    /// <summary>
-    /// 触发此接口的
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IObserver<T> where T : struct
-    {
-
-    }
-
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     public sealed partial class EcsSystemGroup : IEcsSystem

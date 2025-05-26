@@ -41,7 +41,7 @@ namespace SimpleEcs
 #if DEBUG
             if (entity.Index >= entityGens.Length)
             {
-                throw new Exception($"out of range: {entity.Index}");
+                throw new Exception($"out of range: {entity} {entityGens.Length}");
             }
             
             if (entity.Index != 0 && entity.aspectId != aspectId)
