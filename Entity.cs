@@ -8,7 +8,7 @@ namespace SimpleEcs
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     [Serializable]
-    public struct Entity : IEquatable<Entity>
+    public partial struct Entity : IEquatable<Entity>
     {
 #if SIMPLE_ECS_ENABLE_INT
         internal int Index;
@@ -39,7 +39,7 @@ namespace SimpleEcs
         public override string ToString()
         {
 #if DEBUG
-            return $"{BaseAspect.AspectNames[aspectId]} Entity:{Index}_{Version}";
+            return $"{BaseAspect.AspectNames[aspectId]} Entity:{Index}_{Version} Id: {Id}";
 #else
             
             return $"Entity:{Index}_{Version}";

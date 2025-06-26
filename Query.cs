@@ -168,7 +168,7 @@ namespace SimpleEcs
 #if DEBUG
             if (_isLock)
             {
-                throw new Exception("Query不能在foreach中嵌套遍历");
+                throw new Exception($"{_queryDesc}不能在foreach中嵌套遍历");
             }
 #endif
         }

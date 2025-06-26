@@ -95,7 +95,7 @@ namespace SimpleEcs
             var fields  = typeof(T).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (fields.Length == 0)
             {
-                throw new Exception($"使用WithTag添加{nameof(T)}组件");
+                throw new Exception($"该组件没有字段，使用WithTag添加{nameof(T)}组件");
             }
         }
 #endif
