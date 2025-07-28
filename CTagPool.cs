@@ -47,7 +47,7 @@ namespace SimpleEcs
             if (entity.aspectId != _aspectId)
             {
                 throw new Exception(
-                    $"CTagPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}:{entity.aspectId}，不能在{BaseAspect.AspectNames[_aspectId]}:{_aspectId}进行操作");
+                    $"CTagPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.Aspects[entity.aspectId].AspectName}:{entity.aspectId}，不能在{BaseAspect.Aspects[_aspectId].AspectName}:{_aspectId}进行操作");
             }
             
             CheckAlive(entity);
@@ -55,7 +55,7 @@ namespace SimpleEcs
             if (Has(entity))
             {
                 throw new Exception(
-                    $"{BaseAspect.AspectNames[_aspectId]}中的实体[{entity}]重复添加组件\"{typeof(T).Name}\"");
+                    $"{BaseAspect.Aspects[_aspectId].AspectName}中的实体[{entity}]重复添加组件\"{typeof(T).Name}\"");
             }
 #endif
             if (entity.Index >= _sparse.Length)
@@ -95,7 +95,7 @@ namespace SimpleEcs
             if (entity.aspectId != _aspectId)
             {
                 throw new Exception(
-                    $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
+                    $"CPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.Aspects[entity.aspectId].AspectName}，不能在{BaseAspect.Aspects[_aspectId].AspectName}进行操作");
             }
             
             CheckAlive(entity);
@@ -103,7 +103,7 @@ namespace SimpleEcs
             if (!Has(entity))
             {
                 throw new Exception(
-                    $"{BaseAspect.AspectNames[_aspectId]}中的实体[{entity}]没有组件\"{typeof(T).Name}\"");
+                    $"{BaseAspect.Aspects[_aspectId].AspectName}中的实体[{entity}]没有组件\"{typeof(T).Name}\"");
             }
 #endif
 
@@ -116,7 +116,7 @@ namespace SimpleEcs
             if (entity.aspectId != _aspectId)
             {
                 throw new Exception(
-                    $"CTagPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.AspectNames[entity.aspectId]}:{entity.aspectId}，不能在{BaseAspect.AspectNames[_aspectId]}:{_aspectId}进行操作");
+                    $"CTagPool<{typeof(T).Name}>.Add 实体属于{BaseAspect.Aspects[entity.aspectId].AspectName}:{entity.aspectId}，不能在{BaseAspect.Aspects[_aspectId].AspectName}:{_aspectId}进行操作");
             }
             
             CheckAlive(entity);
@@ -124,7 +124,7 @@ namespace SimpleEcs
             if (Has(entity))
             {
                 throw new Exception(
-                    $"{BaseAspect.AspectNames[_aspectId]}中的实体[{entity}]重复添加组件\"{typeof(T).Name}\"");
+                    $"{BaseAspect.Aspects[_aspectId].AspectName}中的实体[{entity}]重复添加组件\"{typeof(T).Name}\"");
             }
 #endif
             if (entity.Index >= _sparse.Length)
@@ -157,7 +157,7 @@ namespace SimpleEcs
             if (entity.aspectId != _aspectId)
             {
                 throw new Exception(
-                    $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
+                    $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.Aspects[entity.aspectId].AspectName}，不能在{BaseAspect.Aspects[_aspectId].AspectName}进行操作");
             }
             
             CheckAlive(entity);
@@ -165,7 +165,7 @@ namespace SimpleEcs
             if (!Has(entity))
             {
                 throw new Exception(
-                    $"{BaseAspect.AspectNames[_aspectId]}中的实体[{entity}]不包含组件\"{typeof(T).Name}\"");
+                    $"{BaseAspect.Aspects[_aspectId].AspectName}中的实体[{entity}]不包含组件\"{typeof(T).Name}\"");
             }
 #endif
             _sparse[entity.Index] = 0;
@@ -182,7 +182,7 @@ namespace SimpleEcs
             if (entity.aspectId != _aspectId)
             {
                 throw new Exception(
-                    $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.AspectNames[entity.aspectId]}，不能在{BaseAspect.AspectNames[_aspectId]}进行操作");
+                    $"CPool<{typeName}>.Del 实体[{entity}]属于{BaseAspect.Aspects[entity.aspectId].AspectName}，不能在{BaseAspect.Aspects[_aspectId].AspectName}进行操作");
             }
             
             CheckAlive(entity);
@@ -190,7 +190,7 @@ namespace SimpleEcs
             if (!Has(entity))
             {
                 throw new Exception(
-                    $"{BaseAspect.AspectNames[_aspectId]}中的实体[{entity}]不包含组件\"{typeof(T).Name}\"");
+                    $"{BaseAspect.Aspects[_aspectId].AspectName}中的实体[{entity}]不包含组件\"{typeof(T).Name}\"");
             }
 #endif
             _sparse[entity.Index] = 0;
@@ -233,6 +233,11 @@ namespace SimpleEcs
         public override object Get(in Entity entity)
         {
             return null;
+        }
+
+        public override void Set(in Entity entity, object value)
+        {
+            
         }
 #endif
     }

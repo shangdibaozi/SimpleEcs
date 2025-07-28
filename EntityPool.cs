@@ -117,7 +117,7 @@ namespace SimpleEcs
 #if DEBUG
                 if (_entityGens[entity.Index].version != entity.Version)
                 {
-                    throw new Exception($"{BaseAspect.AspectNames[_aspectId]}中的实体[{entity}]已销毁");
+                    throw new Exception($"{BaseAspect.Aspects[_aspectId].AspectName}中的实体[{entity}]已销毁");
                 }
 
                 if (!Has(entity))

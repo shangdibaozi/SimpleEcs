@@ -19,7 +19,7 @@ namespace SimpleEcs
         private readonly QueryBuilder<A> _queryBuilder;
         private readonly SArray<Query> _queries;
         private readonly Config _cfg;
-        public readonly EntityPool entityPool;
+        private readonly EntityPool entityPool;
 
         protected Aspect(Config cfg)
         {
@@ -40,9 +40,10 @@ namespace SimpleEcs
             edges = new Edge[_cPools.Capacity];
             edgeIndex = 0;
 #if DEBUG
-            aspectId = (byte)AspectNames.Length;
-            AspectNames.Add(typeof(A).Name);
+            aspectId = (byte)Aspects.Length;
+            AspectName = typeof(A).Name;
             Queries.Add(_queries);
+            Aspects.Add(this);
 #endif
             Inject();
             entityPool = new EntityPool();

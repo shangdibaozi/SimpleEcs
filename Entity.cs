@@ -39,7 +39,7 @@ namespace SimpleEcs
         public override string ToString()
         {
 #if DEBUG
-            return $"{BaseAspect.AspectNames[aspectId]} Entity:{Index}_{Version} Id: {Id}";
+            return $"{BaseAspect.Aspects[aspectId].AspectName} Entity:{Index}_{Version} Id: {Id}";
 #else
             
             return $"Entity:{Index}_{Version}";

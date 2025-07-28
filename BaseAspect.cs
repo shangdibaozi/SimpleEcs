@@ -28,7 +28,8 @@ namespace SimpleEcs
         internal Edge[] edges;
         internal ushort edgeIndex;
 #if DEBUG
-        public static readonly SArray<string> AspectNames = new SArray<string>(4);
+        public string AspectName;
+        public static readonly SArray<BaseAspect> Aspects = new SArray<BaseAspect>(4);
         public static List<SArray<Query>> Queries = new List<SArray<Query>>();
         internal byte aspectId;
 #endif
@@ -46,7 +47,7 @@ namespace SimpleEcs
             
             if (entity.Index != 0 && entity.aspectId != aspectId)
             {
-                throw new Exception($"当前Aspect[{AspectNames[aspectId]}] != Aspect[{AspectNames[entity.aspectId]}]");
+                throw new Exception($"当前Aspect[{Aspects[aspectId].AspectName}] != Aspect[{Aspects[entity.aspectId].AspectName}]");
             }
 #endif
             return entityGens[entity.Index].version == entity.Version;
@@ -166,5 +167,13 @@ namespace SimpleEcs
             }
             entityMeta.edgeIndex = edge.removeEdges[compId].index;
         }
+        
+#if DEBUG
+        public SArray<ACPool> GetPools(in Entity entity)
+        {
+            ref var entityMeta = ref entityGens[entity.Index];
+            return edges[entityMeta.edgeIndex].pools;
+        }
+#endif
     }
 }

@@ -71,7 +71,7 @@ namespace SimpleEcs
 #if DEBUG
             if (entity.Index != 0 && entity.aspectId != aspectId)
             {
-                throw new Exception($"当前Aspect[{AspectNames[aspectId]}] != Aspect[{AspectNames[entity.aspectId]}]");
+                throw new Exception($"当前Aspect[{Aspects[aspectId].AspectName}] != Aspect[{Aspects[entity.aspectId].AspectName}]");
             }
             
             if (entityMeta.version == 0)
@@ -92,6 +92,10 @@ namespace SimpleEcs
 #if DEBUG
         private void CheckAddTagComponent<T>() where T : struct
         {
+            if (!nameof(T).Contains("Tag"))
+            {
+                return;
+            }
             var fields  = typeof(T).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (fields.Length == 0)
             {
@@ -203,7 +207,7 @@ namespace SimpleEcs
 #if DEBUG
             if (entity.Index != 0 && entity.aspectId != aspectId)
             {
-                throw new Exception($"当前Aspect[{AspectNames[aspectId]}] != Aspect[{AspectNames[entity.aspectId]}]");
+                throw new Exception($"当前Aspect[{Aspects[aspectId].AspectName}] != Aspect[{Aspects[entity.aspectId].AspectName}]");
             }
 #endif
             var newEntity = NewEntity();
@@ -219,13 +223,5 @@ namespace SimpleEcs
 
             return newEntity;
         }
-
-#if DEBUG
-        public SArray<ACPool> GetPools(in Entity entity)
-        {
-            ref var entityMeta = ref entityGens[entity.Index];
-            return edges[entityMeta.edgeIndex].pools;
-        }
-#endif
     }
 }
