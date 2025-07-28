@@ -232,7 +232,7 @@ namespace SimpleEcs
 #if DEBUG
         public override object Get(in Entity entity)
         {
-            return null;
+            return default(T);
         }
 
         public override void Set(in Entity entity, object value)

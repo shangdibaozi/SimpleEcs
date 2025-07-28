@@ -194,24 +194,34 @@ namespace SimpleEcs
             {
 #if DEBUG
                 var comp = pool.Get(entity);
-                if (comp == null) return;
+                if (comp == null)
+                {
+                    return;
+                }
 
                 var componentType = comp.GetType();
                 var componentKey = $"{entity.Id}_{componentType.Name}";
 
                 _componentFoldouts.TryAdd(componentKey, false);
-
-                _componentFoldouts[componentKey] = EditorGUILayout.Foldout(
-                    _componentFoldouts[componentKey],
-                    componentType.Name,
-                    true, EditorStyles.foldoutHeader);
+                var fields = componentType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+                if (fields.Length == 0)
+                {
+                    EditorGUILayout.LabelField(componentType.Name);
+                }
+                else
+                {
+                    _componentFoldouts[componentKey] = EditorGUILayout.Foldout(
+                        _componentFoldouts[componentKey],
+                        componentType.Name,
+                        true, EditorStyles.foldoutHeader);
+                }
 
                 if (_componentFoldouts[componentKey])
                 {
                     EditorGUI.indentLevel++;
                     try
                     {
-                        DrawComponentFields(comp, entity, pool);
+                        DrawComponentFields(comp, fields, entity, pool);
                     }
                     catch (Exception e)
                     {
@@ -230,10 +240,10 @@ namespace SimpleEcs
             }
         }
 
-        private void DrawComponentFields(object component, Entity entity, ACPool pool)
+        private void DrawComponentFields(object component, FieldInfo[] fields, Entity entity, ACPool pool)
         {
             var componentType = component.GetType();
-            var fields = componentType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            // var fields = componentType.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var field in fields)
             {
