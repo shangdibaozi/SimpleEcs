@@ -148,7 +148,7 @@ namespace SimpleEcs
             {
                 _entityFoldouts[entity] = EditorGUILayout.Foldout(
                     _entityFoldouts[entity],
-                    entity.ToString(),
+                    $"Entity:{entity.Index}_{entity.Version} Id: {entity.Id}",
                     true);
             }
             finally
@@ -253,7 +253,7 @@ namespace SimpleEcs
                 EditorGUILayout.BeginHorizontal();
                 try
                 {
-                    EditorGUILayout.LabelField(field.Name, GUILayout.Width(120));
+                    EditorGUILayout.LabelField(field.Name, GUILayout.MaxWidth(200));
 
                     // 根据字段类型绘制不同的编辑控件
                     var newValue = DrawFieldEditor(field, fieldValue, fieldKey);

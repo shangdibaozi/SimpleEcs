@@ -85,11 +85,6 @@ namespace SimpleEcs
             }
 #endif
             ref var entityMeta = ref entityGens[entity.Index];
-            // if (entityMeta.edgeIndex == ushort.MaxValue)
-            // {
-            //     entityMeta.edgeIndex = compId;
-            //     return;
-            // }
             var edge = edges[entityMeta.edgeIndex];
             
             if (compId >= edge.addEdges.Length)

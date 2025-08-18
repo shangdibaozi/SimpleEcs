@@ -19,7 +19,7 @@ namespace SimpleEcs
         private readonly QueryBuilder<A> _queryBuilder;
         private readonly SArray<Query> _queries;
         private readonly Config _cfg;
-        private readonly EntityPool entityPool;
+        public readonly EntityPool entityPool;
 
         protected Aspect(Config cfg)
         {

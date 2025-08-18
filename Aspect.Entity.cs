@@ -92,7 +92,7 @@ namespace SimpleEcs
 #if DEBUG
         private void CheckAddTagComponent<T>() where T : struct
         {
-            if (!nameof(T).Contains("Tag"))
+            if (!nameof(T).StartsWith("Tag"))
             {
                 return;
             }

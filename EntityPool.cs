@@ -39,6 +39,16 @@ namespace SimpleEcs
             return entity.Index < _sparse.Length && _sparse[entity.Index] > 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Relation TryGet(in Entity entity)
+        {
+            if (!Has(entity))
+            {
+                Add(entity);
+            }
+            return this[entity];
+        }
+
         public Relation Add(in Entity entity)
         {
             
